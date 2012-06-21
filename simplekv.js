@@ -3,6 +3,17 @@
  * Date 6/20/2012
  * 
  * This File is used to parse and generate the simplekv format described in simplekv.spec.
+ * 
+ * ************************************************************************************
+ * 
+ * SimpleKV - The Simple Key-Value format
+ * Written in 2012 by Michael Varner musikmichael@web.de
+ * 
+ * The Project SimpleKV includes this file and any related content and in particular the software libraries and the SimpleKV specification bundled with this project.
+ * This file is part of SimpleKV.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to SimpleKV to the public domain worldwide.  is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
 //////////////////////////////////////////////
