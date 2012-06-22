@@ -93,3 +93,12 @@ This file is part of SimpleKV.
 
 To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to SimpleKV to the public domain worldwide.  is distributed without any warranty.
 You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+-----------------------------------------------------------
+
+Javascript Lib
+==============
+
+The JS library does not require any libraries.
+It should be used by includeing simplekv.js and then running parse(text) to parse a given text.
+It should run in node.js and in the common browsers (besides IE).
