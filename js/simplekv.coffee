@@ -32,8 +32,8 @@ PARSE_KV_SPERATOR     = '\n'.charCodeAt 0
 ##
 class StrBuf
     constructor: (@buf=[]) ->
-    append: s -> @push s
-    toString: -> @join ''
+    append: (s) -> @buf.push s
+    toString: -> @buf.join ''
 
 ##
 # The text ref class is used store a substring as a reference not as itself.
@@ -42,7 +42,7 @@ class StrBuf
 ##
 class StrRef
     constructor: (@ref, @a, @b, @str) ->
-    toString: -> @str ?= @text.substring @a, this.b
+    toString: -> @str ?= @ref.substring @a, this.b
 
 ##
 # The string iterator is used to iterate over a string like a stream
@@ -166,4 +166,3 @@ parse = (text) ->
             d[k].push(v)
         else
             d[k] = v;
-        
