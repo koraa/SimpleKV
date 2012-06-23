@@ -19,10 +19,15 @@
 #######################
 # CONSTANTS
 
-PARSE_ALLOWED_PRE     = (s.charCodeAt(0) for s in [' ', '\t', '\n'])
-PARSE_SPERATORS_PLAIN = (s.charCodeAt(0) for s in [' ', '\t'])
-PARSE_SPERATOR_MARK   = ':'.charCodeAt 0
-PARSE_KV_SPERATOR     = '\n'.charCodeAt 0
+C_PARSE_ALLOWED_PRE     = [' ', '\t', '\n']
+C_PARSE_SPERATORS_PLAIN = [' ', '\t']
+C_PARSE_SPERATOR_MARK   = ':'
+C_PARSE_KV_SPERATOR     = '\n'
+
+PARSE_ALLOWED_PRE     = (s.charCodeAt(0) for s in C_PARSE_ALLOWED_PRE)
+PARSE_SPERATORS_PLAIN = (s.charCodeAt(0) for s in C_PARSE_SPERATORS_PLAIN)
+PARSE_SPERATOR_MARK   = C_PARSE_SPERATOR_MARK.charCodeAt 0
+PARSE_KV_SPERATOR     = C_PARSE_KV_SPERATOR.charCodeAt 0
 
 #######################
 # Classes
@@ -170,10 +175,10 @@ parse = (text) ->
 #########################
 # Export
 
-exports.PARSE_ALLOWED_PRE     = PARSE_ALLOWED_PRE
-exports.PARSE_SPERATORS_PLAIN = PARSE_SPERATORS_PLAIN
-exports.PARSE_SPERATOR_MARK   = PARSE_SPERATOR_MARK
-exports.PARSE_KV_SPERATOR     = PARSE_KV_SPERATOR
+exports.PARSE_ALLOWED_PRE     = C_PARSE_ALLOWED_PRE
+exports.PARSE_SPERATORS_PLAIN = C_PARSE_SPERATORS_PLAIN
+exports.PARSE_SPERATOR_MARK   = C_PARSE_SPERATOR_MARK
+exports.PARSE_KV_SPERATOR     = C_PARSE_KV_SPERATOR
 
 exports.StrBuf  = StrBuf
 exports.StrRef  = StrRef
