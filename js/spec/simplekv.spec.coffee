@@ -1,17 +1,17 @@
 #
 # Author: Michael Varner
 # Date 6/22/2012
-# 
+#
 # This File is used to test the SimpleKV JS implementation
-# 
+#
 ################################
-# 
+#
 # SimpleKV - The Simple Key-Value format
 # Written in 2012 by Michael Varner musikmichael@web.de
-# 
+#
 # The Project SimpleKV includes this file and any related content and in particular the software libraries and the SimpleKV specification bundled with this project.
 # This file is part of SimpleKV.
-# 
+#
 # To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to SimpleKV to the public domain worldwide.  is distributed without any warranty.
 # You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 #
@@ -31,54 +31,28 @@ pipe = (fl...) ->
     fl.reduce (o, f) -> f(o)
 
 ##
+# Always returns a list
+# Return a single element list for objects
+##
+to_ar = (x) ->
+    if x instanceof Array then x else [x]
+
+##
 # Convert a charcode or a list of charcodes to a comma
 # seperated list of chars
 ##
 list_ccode = (S) ->
-    S = [S] unless S instanceof Array
-    [ String.fromCharCode(c) for c in S].join(", ")
-
-##
-# Generate a random int in a range
-##
-betw = (a=0, b=100) -> Math.floor(a + Math.random() * b)
-
-##
-# Generate a random array
-##
-rand_str = (len=betw()) ->
-    buf = []
-    size = 0
-        
-    while size < len
-        s = Math.random().toString(36).substr(2)
-        size += s.length
-        buf.push s
-                
-    do buf.join
-
-##
-# Generate an array filled with the output of the generate fun
-##
-rand_ar = (len=betw(), gen=rand_str) ->
-    gen() for i in [0..len]
-        
-##
-# Always returns a list
-# Return a single element list for objects
-##
-to_ar = (x) -> if x instanceof Array then x else [x]
+    [ String.fromCharCode(c) for c in to_ar(S)].join(", ")
 
 ##
 # Segmentate a list
 ##
 seg = (len, li) ->
     pipe li,
-        ((l) -> [0..(Math.ceiling li.length / len) ]),
-        ((i) -> i.map (
+        ((l) -> [0...(Math.ceil li.length / len) ].map (
             (x) -> x*len )),
         ((i) -> i.map (
-            (x) -> li[x...(Math.max li.length, x+len)] ))
+            (x) -> li[x...(Math.min li.length, x+len)] ))
 ##
 # Generate a character range
 ##
@@ -87,11 +61,35 @@ crange = (a...) ->
         ((as) -> as.map (
             (c) -> c.charCodeAt 0 )),
         ((il) -> seg(2, il)),
-        ((rs) -> ([] + rs).reduce (
-            (o, r) -> o + [r[0]..r[1]] )),
+        ((rs) -> ([[]].concat rs).reduce (
+            (o, r) -> o.concat [r[0]..r[1]] )),
         ((ir) -> ir.map (
             (i) -> String.fromCharCode(i) ))
-        
+
+##
+# Generate a random int in a range
+##
+betw = (a=0, b=100) ->
+    Math.floor(a + Math.random() * b)
+
+##
+# Select a random array elem
+##
+at_rand = (l) ->
+    l[betw(0, l.length-1)]
+
+##
+# Generate a random array
+##
+rand_str = (len=betw(), chars=crange('a','z','A','Z','0','1')) ->
+    (rand_ar len, (-> at_rand chars )).join('')
+
+
+##
+# Generate an array filled with the output of the generate fun
+##
+rand_ar = (len=betw(), gen=rand_str) ->
+    gen(i) for i in [0..len]
 
 #####################
 # Test Util
@@ -125,7 +123,7 @@ describe "SimpleKV", (->
                 @actual.length == exp
             )
     )
-        
+
     describe  "StrBuf", (->
         it "init empty", (->
             b = new simplekv.StrBuf
@@ -155,7 +153,8 @@ describe "SimpleKV", (->
             expect(sr.toString).toThrow()
         )
 
-        they "zerolen", (-> [betw(), rand_str()]), 8, ((I) ->        
+        they "zerolen", (-> [betw(), rand_str()]), 8, ((I) ->
+            console.log I[1]
             sr = new simplekv.StrRef I[1], I[0], I[0]
 
             expect(do sr.toString).toBeEmpty()
@@ -164,7 +163,7 @@ describe "SimpleKV", (->
         they "correct", rand_str, 16, ((str) ->
             a = betw 0,   str.length-2
             b = betw a+1, str.length
-                                                
+
             sr = new simplekv.StrRef str, a,b
 
             expect(do sr.toString).not.toBeEmpty()
