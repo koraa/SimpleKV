@@ -1,17 +1,17 @@
 #
 # Author: Michael Varner
 # Date 6/20/2012
-# 
+#
 # This File is used to parse and generate the simplekv format described in simplekv.spec.
-# 
+#
 ################################
-# 
+#
 # SimpleKV - The Simple Key-Value format
 # Written in 2012 by Michael Varner musikmichael@web.de
-# 
+#
 # The Project SimpleKV includes this file and any related content and in particular the software libraries and the SimpleKV specification bundled with this project.
 # This file is part of SimpleKV.
-# 
+#
 # To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to SimpleKV to the public domain worldwide.  is distributed without any warranty.
 # You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 #
@@ -28,7 +28,7 @@ PARSE_KV_SPERATOR     = '\n'.charCodeAt 0
 # Classes
 
 ##
-# The StrBuf is used to quickly construct a 
+# The StrBuf is used to quickly construct a
 ##
 class StrBuf
     constructor: (@buf=[]) ->
@@ -68,7 +68,7 @@ class StrIter
 #######################
 # PARSER
 
-parse_check_kv = (buf) -> 
+parse_check_kv = (buf) ->
     if (buf.i_cur() == PARSE_KV_SPERATOR)
         console.error("Syntax error (did not expect newline) while parsing a simplekv at char ", buf.ref)
         return true
@@ -92,10 +92,10 @@ parse = (text) ->
     # For every K/V-Pair the machine runs through every state.
     # In the transit from one state to onenother a mark is set (-> curpair).
     # In the transit 4->1 the current markset is being pusht to the output stack (->ret).
-    # 
+    #
     # Finally the ret-stack is converted to real strings, the multipledefinitions are squashed to arrays
     # and the entire thing is returned as a string.
-    # 
+    #
     # In the code
     # - The machine is the 'big' for loop
     # - The states are the little (commented) for loops
@@ -114,10 +114,10 @@ parse = (text) ->
         while buf.i_next() in PARSE_ALLOWED_PRE
             abort = buf.eot() # Abort if at EOT
         break if abort
-                
+
         # FOUND KEY <===================== MARK
         curpair[0].a = buf.ref
-            
+
         # INSIDE KEY
         # - Iterate untill SEP-char (PARSE_SEP_PLAIN or PARSE_SEP_MARK)
         # - Discard line/pair of K/V seperator is found; Print error
@@ -141,7 +141,7 @@ parse = (text) ->
             abort = parse_check_eot buf
         break if abort
         continue if nextl
-            
+
         buf.i_next() if  c == PARSE_SEP_MARK
 
 
@@ -171,7 +171,7 @@ parse = (text) ->
 # Export
 
 exports.PARSE_ALLOWED_PRE     = PARSE_ALLOWED_PRE
-exports.PARSE_SPERATORS_PLAIN = PARSE_SPERATORS_PLAIN 
+exports.PARSE_SPERATORS_PLAIN = PARSE_SPERATORS_PLAIN
 exports.PARSE_SPERATOR_MARK   = PARSE_SPERATOR_MARK
 exports.PARSE_KV_SPERATOR     = PARSE_KV_SPERATOR
 
