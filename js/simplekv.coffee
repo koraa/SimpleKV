@@ -50,9 +50,10 @@ class StrRef
     toString: -> @str ?= @ref.substring @a, this.b
 
 ##
-# The string iterator is used to iterate over a string like a stream
+# Iterates over a set of elements
+# Has a specialization for iterating over strings with the i_ methods
 ##
-class StrIter
+class Iterator
     constructor: (@ref, @pt=-1) ->
     cur: -> @char ?= @ref[@pt]
     next: -> @char ?= @ref[++@pt] if !@eot
@@ -111,7 +112,7 @@ parse = (text) ->
     # - The finalization is on the bottom
     ret = []
 
-    buf = new StrIter(text)
+    buf = new Iterator(text)
     while true
         # INIT
         curpair = [new StrRef text, new StrRef text];
@@ -185,6 +186,6 @@ exports.PARSE_KV_SPERATOR     = C_PARSE_KV_SPERATOR
 
 exports.StrBuf  = StrBuf
 exports.StrRef  = StrRef
-exports.StrIter = StrIter
+exports.Iterator = Iterator
 
 exports.parse = parse
