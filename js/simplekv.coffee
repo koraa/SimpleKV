@@ -54,21 +54,24 @@ class StrRef
 ##
 class StrIter
     constructor: (@ref, @pt=-1) ->
-    cur: -> @cur ?= @ref[@pt]
-    next: -> @cur ?= @ref[++@pt]
-    pref: -> @cur ?= @ref[--@pt]
+    cur: -> @char ?= @ref[@pt]
+    next: -> @char ?= @ref[++@pt] if !@eot
+    pref: -> @char ?= @ref[--@pt] if !@pre
     at: (i) -> @ref[i]
     rel_at: (i) -> @at(@pt + i)
     peek_next: -> @rel_at(1)
     peek_prev: -> @rel_at(-1)
-    i_cur: -> @cur ?= @ref.charCodeAt @pt
-    i_next: -> @cur ?= @ref.charCodeAt ++@pt
-    i_pref: -> @cur ?= @ref.charCodeAt --@pt
-    i_at: (i) -> @ref.charCodeAt[i]
-    i_rel_at: (i) -> @i_at(@pt + i)
-    i_peek_next: -> @i_rel_at(1)
-    i_peek_prev: -> @i_rel_at(-1)
-    eot: -> (do @cur)? && @ref > 0
+
+    i_cur:  -> @cur().charCodeAt 0
+    i_next: -> @next().charCodeAt 0
+    i_pref: -> @prev().charCodeAt 0
+    i_at: (i) -> @at(i).charCodeAt 0
+    i_rel_at: (i) -> @rel_at(i).charCodeAt 0
+    i_peek_next: -> @peek_next().charCodeAt 0
+    i_peek_prev: -> @peek_prev().charCodeAt 0
+
+    pre: -> @ref < 0
+    eot: -> !(do @cur)? && !pre
 
 #######################
 # PARSER
