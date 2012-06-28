@@ -55,24 +55,24 @@ class StrRef
 ##
 class Iterator
     constructor: (@ref, @pt=-1) ->
-    cur: -> @char ?= @ref[@pt]
-    next: -> @char ?= @ref[++@pt] if !@eot
-    pref: -> @char ?= @ref[--@pt] if !@pre
+    cur: -> @ref[@pt]
+    next: -> @ref[++@pt] if !@eot()
+    pref: -> @ref[--@pt] if !@pre()
     at: (i) -> @ref[i]
     rel_at: (i) -> @at(@pt + i)
     peek_next: -> @rel_at(1)
     peek_prev: -> @rel_at(-1)
 
-    i_cur:  -> @cur().charCodeAt 0
-    i_next: -> @next().charCodeAt 0
-    i_pref: -> @prev().charCodeAt 0
-    i_at: (i) -> @at(i).charCodeAt 0
-    i_rel_at: (i) -> @rel_at(i).charCodeAt 0
-    i_peek_next: -> @peek_next().charCodeAt 0
-    i_peek_prev: -> @peek_prev().charCodeAt 0
+    i_cur:        -> @cur().charCodeAt 0        if @cur()?
+    i_next:       -> @cur().charCodeAt 0        if @next()?
+    i_pref:       -> @cur().charCodeAt 0        if @next()?
+    i_at: (i)     -> @at(i).charCodeAt 0        if @at(i)?
+    i_rel_at: (i) -> @rel_at(i).charCodeAt 0    if @rel_at(i)?
+    i_peek_next:  -> @peek_next(i).charCodeAt 0 if @peek_next()?
+    i_peek_prev:  -> @peek_prev(i).charCodeAt 0 if @peek_prev()?
 
-    pre: -> @ref < 0
-    eot: -> !(do @cur)? && !pre
+    pre: -> @pt < 0
+    eot: -> (! @cur())? && (!@pre() || @ref.length < 1)
 
 #######################
 # PARSER
@@ -122,6 +122,7 @@ parse = (text) ->
         # - Abort if EOT
         while buf.i_next() in PARSE_ALLOWED_PRE
             abort = buf.eot() # Abort if at EOT
+            break if abort
         break if abort
 
         # FOUND KEY <===================== MARK
@@ -134,6 +135,8 @@ parse = (text) ->
         until (buf.i_next() in PARSE_SPERATORS_PLAIN || buf.i_cur() == PARSE_SPERATOR_MARK)
             nextl = parse_check_kv buf
             abort = parse_check_eot buf
+            break if nextl || abort
+            console.log "ITR: ", nextl, abort, buf.pt
         break if abort
         continue if nextl
 
@@ -148,6 +151,7 @@ parse = (text) ->
         while buf.i_next() in PARSE_SPERATORS_PLAIN
             nextl = parse_check_kv buf
             abort = parse_check_eot buf
+            break if nextl || abort
         break if abort
         continue if nextl
 
