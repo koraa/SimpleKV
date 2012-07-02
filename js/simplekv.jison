@@ -1,45 +1,67 @@
+/* ****** TOKEN VARIABLES ***** */
 %lex
-%% /* LEXICAL */
 
-sep                          "(:|:?\s+):?"
+M     :
 
+LFSEP "\n"
+KVSEP " "
+
+SPACE [^\S{LFSEP}]
+
+/* ******* TOKENS ************* */
 %%
 
-#.*                          /* Ignore Comments */
-^\s*                         /* Ignore Whitespace At beginning of line */
-(?<=^\s*)\w*(?=sep)          return 'KEY';
-(?=sep).*$                   return 'VALUE';
-sep                          return 'SEP';
-<<EOF>>                      return 'EOF';
+^\s+"#"[^\n]* /* Ignore comments ate the beginning of the line*/
+^\s+          /* Ignore space before expressions */
 
+
+{KVSEP}	               return 'KV_SEP';
+{LFSEP}                return 'LF_SEP';
+
+"key"                  return 'KEY';
+"value"                return 'VALUE'; 
+
+<<EOF>>                return 'EOF';
+
+/* ******* OPERATOR PRECEDENCE * */
 /lex
 
-%left SEP
+%left KV_SEP
+%left LF_SEP
 
-%start expressions
-%% /* GRAMMAR */
+/* ******* GRAMMAR ************* */
+%%
 
-expressions
-    : pairs EOF
-        {
-	    console.log($1);
-	    d = {};
-	    for (var i = 0; i < $1.length; i++) {
-	    	var k = $1[i][0];
-		var v = $1[i][1];
+simplekv
+    : kvlist EOF
+        { 
+	    return null;
+	    console.log("EOF"); 
+            var r = {};
+            for (var i = $1.length-1; i >= 0; i--) {
+                var k = $1[0], v = $1[1];
+                var slot = r[k];
 
-		if (d[k] != null)
-		   d[k] = (d[k] instanceof Array ? d[k].concat(v) : [d[k], v]);
-	    }
-
-	    print(d);
-	    return d;
+                if (slot == null)
+                    r[k] = v;
+                else if (slot instanceof Array)
+                    slot.push(v);
+                else
+                    r[k] = [slot, v];
+            }
+            return r;
         }
     ;
 
-kvpairs
-    : KEY SEP VALUE
-        { $$ = [[$1, $3]]; }
-    | kvpairs kvpairs
-        { $$ = $1.concat($2); }
+
+kvlist
+    : kvpair EOF
+        { console.log("kvlist 1"); $$ = [$1]; }
+    | kvpair LF_SEP kvlist
+        { console.log("kvlist 2"); $$ = $3.concat($1); }
+    ;
+
+kvpair
+    : KEY KV_SEP VALUE
+        { console.log("kvpair"); $$ = [$1, $3]; }
     ;
