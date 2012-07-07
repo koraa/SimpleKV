@@ -99,6 +99,4 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 Javascript Lib
 ==============
 
-The JS library does not require any libraries.
-It should be used by includeing simplekv.js and then running parse(text) to parse a given text.
-It should run in node.js and in the common browsers (besides IE).
+The JS library requires Coffescript and Node.js to run.

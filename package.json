@@ -1,0 +1,33 @@
+{
+  "name": "simplekv",
+  "description": "Parser for the SimpleKV format",
+  "keywords": [
+    "language",
+    "coffeescript"
+  ],
+  "author": {
+    "name": "Karolin Varner"
+  },
+  "version": "0.0.1",
+  "licenses": [
+    {
+      "type": "LGPL",
+      "url": "https://www.gnu.org/licenses/lgpl.txt"
+    }
+  ],
+  "engines": {
+    "node": ">=0.4.0"
+  },
+  "main": "./js/simplekv.coffee",
+  "homepage": "https://github.com/koraa/SimpleKV/",
+  "bugs": {
+    "name": "https://github.com/koraa/SimpleKV/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:koraa/SimpleKV.git"
+  },
+  "dependencies": {
+    "coffee-script: ">=1.0.1"
+  }
+}
